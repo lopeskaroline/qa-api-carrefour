@@ -1583,7 +1583,6 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status code is 400\", function () {\r",
                   "    pm.response.to.have.status(400);\r",
@@ -1592,9 +1591,11 @@
                   "const jsonData = pm.response.json();\r",
                   "\r",
                   "pm.test(\"Mensagem de erro\", function () {\r",
-                  "    pm.expect(jsonData.message).to.eql(\"preco deve ser um número positivo\");\r",
-                  "});\r"
+                  "    pm.expect(jsonData.preco).to.eql(\"preco deve ser um número positivo\");\r",
+                  "});\r",
+                  ""
                 ],
+                "type": "text/javascript",
                 "packages": {},
                 "requests": {}
               }
@@ -1647,7 +1648,6 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status code is 400\", function () {\r",
                   "    pm.response.to.have.status(400);\r",
@@ -1656,9 +1656,11 @@
                   "const jsonData = pm.response.json();\r",
                   "\r",
                   "pm.test(\"Mensagem de erro\", function () {\r",
-                  "    pm.expect(jsonData.message).to.eql(\"quantidade deve ser maior ou igual a 0\");\r",
-                  "});\r"
+                  "    pm.expect(jsonData.quantidade).to.eql(\"quantidade deve ser maior ou igual a 0\");\r",
+                  "});\r",
+                  ""
                 ],
+                "type": "text/javascript",
                 "packages": {},
                 "requests": {}
               }
@@ -1687,70 +1689,6 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nome\": \"Tech Pix1\",\n  \"preco\": 10,\n  \"descricao\": \"Camera\",\n  \"quantidade\": -1\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url_carrefour}}/produtos",
-              "host": [
-                "{{url_carrefour}}"
-              ],
-              "path": [
-                "produtos"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Product with the same name",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {\r",
-                  "    pm.response.to.have.status(400);\r",
-                  "});\r",
-                  "\r",
-                  "const jsonData = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"Mensagem de erro\", function () {\r",
-                  "    pm.expect(jsonData.message).to.eql(\"Já existe produto com esse nome\");\r",
-                  "});\r"
-                ],
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "{{token}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nome\": \"Tech Pix\",\n  \"preco\": 100,\n  \"descricao\": \"Camera\",\n  \"quantidade\": 100\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1834,7 +1772,6 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status code is 400\", function () {\r",
                   "    pm.response.to.have.status(400);\r",
@@ -1843,9 +1780,11 @@
                   "const jsonData = pm.response.json();\r",
                   "\r",
                   "pm.test(\"Mensagem de erro\", function () {\r",
-                  "    pm.expect(jsonData.message).to.eql(\"Produto não encontrado\");\r",
-                  "});\r"
+                  "    pm.expect(jsonData.id).to.eql(\"id deve ter exatamente 16 caracteres alfanuméricos\");\r",
+                  "});\r",
+                  ""
                 ],
+                "type": "text/javascript",
                 "packages": {},
                 "requests": {}
               }
@@ -1860,13 +1799,13 @@
               }
             ],
             "url": {
-              "raw": "{{url_carrefour}}/produtos/1",
+              "raw": "{{url_carrefour}}/produtos/teste",
               "host": [
                 "{{url_carrefour}}"
               ],
               "path": [
                 "produtos",
-                "1"
+                "teste"
               ]
             }
           },
@@ -1878,7 +1817,6 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status code is 400\", function () {\r",
                   "    pm.response.to.have.status(400);\r",
@@ -1890,6 +1828,7 @@
                   "    pm.expect(jsonData.id).to.eql(\"id deve ter exatamente 16 caracteres alfanuméricos\");\r",
                   "});\r"
                 ],
+                "type": "text/javascript",
                 "packages": {},
                 "requests": {}
               }
@@ -1925,13 +1864,13 @@
               }
             },
             "url": {
-              "raw": "{{url_carrefour}}/produtos/1",
+              "raw": "{{url_carrefour}}/produtos/teste",
               "host": [
                 "{{url_carrefour}}"
               ],
               "path": [
                 "produtos",
-                "1"
+                "teste"
               ]
             }
           },
@@ -2101,70 +2040,6 @@
           "response": []
         },
         {
-          "name": "Create Cart More than 1 cart",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {\r",
-                  "    pm.response.to.have.status(400);\r",
-                  "});\r",
-                  "\r",
-                  "const jsonData = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"Mensagem de erro\", function () {\r",
-                  "    pm.expect(jsonData.message).to.eql(\"Não é permitido ter mais de 1 carrinho\");\r",
-                  "});\r"
-                ],
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "{{token}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"produtos\": [\n    {\n      \"idProduto\": \"Mrpd4vROXRzXgnsk\",\n      \"quantidade\": 10\n    },\n    {\n      \"idProduto\": \"txEfAv2jeeLPwvFY\",\n      \"quantidade\": 5\n    }\n  ]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url_carrefour}}/carrinhos",
-              "host": [
-                "{{url_carrefour}}"
-              ],
-              "path": [
-                "carrinhos"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "Create Cart without token",
           "event": [
             {
@@ -2235,7 +2110,6 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status code is 400\", function () {\r",
                   "    pm.response.to.have.status(400);\r",
@@ -2244,9 +2118,11 @@
                   "const jsonData = pm.response.json();\r",
                   "\r",
                   "pm.test(\"Mensagem de erro\", function () {\r",
-                  "    pm.expect(jsonData.message || jsonData.id).to.eql(\"id deve ter exatamente 16 caracteres alfanuméricos\");\r",
-                  "});\r"
+                  "    pm.expect(jsonData.id).to.eql(\"id deve ter exatamente 16 caracteres alfanuméricos\");\r",
+                  "});\r",
+                  ""
                 ],
+                "type": "text/javascript",
                 "packages": {},
                 "requests": {}
               }
@@ -2261,69 +2137,13 @@
               }
             ],
             "url": {
-              "raw": "{{url_carrefour}}/carrinhos/{{cartId}}",
+              "raw": "{{url_carrefour}}/carrinhos/teste",
               "host": [
                 "{{url_carrefour}}"
               ],
               "path": [
                 "carrinhos",
-                "{{cartId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Cart",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "});\r",
-                  "\r",
-                  "const jsonData = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
-                  "    pm.expect(jsonData.message).to.eql(\"Registro excluído com sucesso\");\r",
-                  "});\r"
-                ],
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "{{token}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{url_carrefour}}/carrinhos/concluir-compra",
-              "host": [
-                "{{url_carrefour}}"
-              ],
-              "path": [
-                "carrinhos",
-                "concluir-compra"
+                "teste"
               ]
             }
           },
