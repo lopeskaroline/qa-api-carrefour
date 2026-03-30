@@ -20,34 +20,17 @@ jobs:
           node-version: 18
 
       - name: Instalar Newman
-        run: npm install -g newman
+        run: npm install -g newman newman-reporter-htmlextra
 
-      - name: Rodar Happy Path
+      - name: Rodar testes e gerar relatório
         run: |
           newman run Carrefour.postman_collection.json \
           -e carrefour_env.json \
-          --folder "01 - Happy Path E2E"
+          -r cli,htmlextra \
+          --reporter-htmlextra-export report.html
 
-      - name: Rodar Negative Users
-        run: |
-          newman run Carrefour.postman_collection.json \
-          -e carrefour_env.json \
-          --folder "02 - Negative Tests - Users"
-
-      - name: Rodar Negative Login
-        run: |
-          newman run Carrefour.postman_collection.json \
-          -e carrefour_env.json \
-          --folder "03 - Negative Tests - Login"
-
-      - name: Rodar Negative Products
-        run: |
-          newman run Carrefour.postman_collection.json \
-          -e carrefour_env.json \
-          --folder "04 - Negative Tests - Products"
-
-      - name: Rodar Negative Carts
-        run: |
-          newman run Carrefour.postman_collection.json \
-          -e carrefour_env.json \
-          --folder "05 - Negative Tests - Carts"
+      - name: Upload relatório
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-report
+          path: report.html
