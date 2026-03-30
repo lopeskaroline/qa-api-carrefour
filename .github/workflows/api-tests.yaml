@@ -1,0 +1,53 @@
+name: API Tests - Newman
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  run-api-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Instalar Newman
+        run: npm install -g newman
+
+      - name: Rodar Happy Path
+        run: |
+          newman run Carrefour.postman_collection.json \
+          -e carrefour_env.json \
+          --folder "01 - Happy Path E2E"
+
+      - name: Rodar Negative Users
+        run: |
+          newman run Carrefour.postman_collection.json \
+          -e carrefour_env.json \
+          --folder "02 - Negative Tests - Users"
+
+      - name: Rodar Negative Login
+        run: |
+          newman run Carrefour.postman_collection.json \
+          -e carrefour_env.json \
+          --folder "03 - Negative Tests - Login"
+
+      - name: Rodar Negative Products
+        run: |
+          newman run Carrefour.postman_collection.json \
+          -e carrefour_env.json \
+          --folder "04 - Negative Tests - Products"
+
+      - name: Rodar Negative Carts
+        run: |
+          newman run Carrefour.postman_collection.json \
+          -e carrefour_env.json \
+          --folder "05 - Negative Tests - Carts"
