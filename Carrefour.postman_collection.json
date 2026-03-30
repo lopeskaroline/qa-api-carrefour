@@ -1420,6 +1420,90 @@
       "name": "04 - Negative Tests - Products",
       "item": [
         {
+          "name": "Create user",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const email = `qa_${Date.now()}@teste.com.br`;\r",
+                  "const nome = `Usuario_${Date.now()}`;\r",
+                  "const password = \"teste\";\r",
+                  "\r",
+                  "pm.environment.set(\"email\", email);\r",
+                  "pm.environment.set(\"password\", password);\r",
+                  "pm.environment.set(\"nomeUser\", nome);\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"userId\", jsonData._id);\r",
+                  "\r",
+                  "pm.test(\"Response has required fields\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"message\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"_id\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Field types are correct\", function () {\r",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+                  "    pm.expect(jsonData._id).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"{{nomeUser}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"administrador\": \"true\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "LOGIN",
           "event": [
             {
@@ -1858,6 +1942,90 @@
     {
       "name": "05 - Negative Tests - Carts",
       "item": [
+        {
+          "name": "Create user",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const email = `qa_${Date.now()}@teste.com.br`;\r",
+                  "const nome = `Usuario_${Date.now()}`;\r",
+                  "const password = \"teste\";\r",
+                  "\r",
+                  "pm.environment.set(\"email\", email);\r",
+                  "pm.environment.set(\"password\", password);\r",
+                  "pm.environment.set(\"nomeUser\", nome);\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"userId\", jsonData._id);\r",
+                  "\r",
+                  "pm.test(\"Response has required fields\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"message\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"_id\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Field types are correct\", function () {\r",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+                  "    pm.expect(jsonData._id).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"{{nomeUser}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"administrador\": \"true\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
         {
           "name": "LOGIN",
           "event": [
