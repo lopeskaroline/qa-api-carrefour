@@ -1,0 +1,2304 @@
+{
+  "info": {
+    "_postman_id": "cca9a397-01eb-432d-b07b-115df3a6f029",
+    "name": "Carrefour",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "14463731",
+    "_collection_link": "https://go.postman.co/collection/14463731-cca9a397-01eb-432d-b07b-115df3a6f029?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "01 - Happy Path E2E",
+      "item": [
+        {
+          "name": "Create user",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const email = `qa_${Date.now()}@teste.com.br`;\r",
+                  "const nome = `Usuario_${Date.now()}`;\r",
+                  "const password = \"teste\";\r",
+                  "\r",
+                  "pm.environment.set(\"email\", email);\r",
+                  "pm.environment.set(\"password\", password);\r",
+                  "pm.environment.set(\"nomeUser\", nome);\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"userId\", jsonData._id);\r",
+                  "\r",
+                  "pm.test(\"Response has required fields\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"message\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"_id\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Field types are correct\", function () {\r",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+                  "    pm.expect(jsonData._id).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"{{nomeUser}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"administrador\": \"true\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "LOGIN",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const responseData = pm.response.json();\r",
+                  "pm.environment.set(\"token\", responseData.authorization);\r",
+                  "\r",
+                  "pm.test(\"Token foi gerado\", function () {\r",
+                  "    pm.expect(responseData.authorization).to.be.a(\"string\");\r",
+                  "    pm.expect(responseData.authorization).to.not.be.empty;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(responseData.message).to.eql(\"Login realizado com sucesso\");\r",
+                  "});\r"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/login",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://serverest.dev/login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"email\": \"fulano@qa.com\",\r\n  \"password\": \"teste\"\r\n}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Get user by Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Response has required fields\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"nome\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"email\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"password\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"administrador\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"_id\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Field types are correct\", function () {\r",
+                  "    pm.expect(jsonData.nome).to.be.a(\"string\");\r",
+                  "    pm.expect(jsonData.email).to.be.a(\"string\");\r",
+                  "    pm.expect(jsonData.password).to.be.a(\"string\");\r",
+                  "    pm.expect(jsonData.administrador).to.be.a(\"string\");\r",
+                  "    pm.expect(jsonData._id).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Usuário buscado é o mesmo criado\", function () {\r",
+                  "    pm.expect(jsonData._id).to.eql(pm.environment.get(\"userId\"));\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios/{{userId}}",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const nomeProduct = `Produto_${Date.now()}`;\r",
+                  "pm.environment.set(\"nomeProduct\", nomeProduct);\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"productId\", jsonData._id);\r",
+                  "\r",
+                  "pm.test(\"Response has required fields\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"message\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"_id\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Field types are correct\", function () {\r",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+                  "    pm.expect(jsonData._id).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"{{nomeProduct}}\",\n  \"preco\": 100,\n  \"descricao\": \"computador\",\n  \"quantidade\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/produtos",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "produtos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Response has required fields\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"quantidade\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"produtos\");\r",
+                  "    pm.expect(jsonData.produtos).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Quantidade field matches produtos length\", function () {\r",
+                  "    pm.expect(jsonData.quantidade).to.eql(jsonData.produtos.length);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Products have required fields\", function () {\r",
+                  "    jsonData.produtos.forEach(produto => {\r",
+                  "        pm.expect(produto).to.have.property(\"nome\");\r",
+                  "        pm.expect(produto).to.have.property(\"preco\");\r",
+                  "        pm.expect(produto).to.have.property(\"descricao\");\r",
+                  "        pm.expect(produto).to.have.property(\"quantidade\");\r",
+                  "        pm.expect(produto).to.have.property(\"_id\");\r",
+                  "    });\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/produtos?preco=100&quantidade=100",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "produtos"
+              ],
+              "query": [
+                {
+                  "key": "preco",
+                  "value": "100"
+                },
+                {
+                  "key": "quantidade",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"email\", \"beltrano.test@qa.com.br\");\r",
+                  "pm.environment.set(\"password\", \"teste\");\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Registro alterado com sucesso\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Fulano da Silva\",\n  \"email\": \"{{email}}\",\n  \"password\": \"teste\",\n  \"administrador\": \"true\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios/{{userId}}",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Response has required fields\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"quantidade\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"usuarios\");\r",
+                  "    pm.expect(jsonData.usuarios).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Quantidade confere com total de usuários\", function () {\r",
+                  "    pm.expect(jsonData.quantidade).to.eql(jsonData.usuarios.length);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Users have required fields\", function () {\r",
+                  "    jsonData.usuarios.forEach(usuario => {\r",
+                  "        pm.expect(usuario).to.have.property(\"nome\");\r",
+                  "        pm.expect(usuario).to.have.property(\"email\");\r",
+                  "        pm.expect(usuario).to.have.property(\"password\");\r",
+                  "        pm.expect(usuario).to.have.property(\"administrador\");\r",
+                  "        pm.expect(usuario).to.have.property(\"_id\");\r",
+                  "    });\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product by Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Response has required fields\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"nome\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"preco\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"descricao\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"quantidade\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"_id\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Field types are correct\", function () {\r",
+                  "    pm.expect(jsonData.nome).to.be.a(\"string\");\r",
+                  "    pm.expect(jsonData.preco).to.be.a(\"number\");\r",
+                  "    pm.expect(jsonData.descricao).to.be.a(\"string\");\r",
+                  "    pm.expect(jsonData.quantidade).to.be.a(\"number\");\r",
+                  "    pm.expect(jsonData._id).to.be.a(\"string\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/produtos/{{productId}}",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "produtos",
+                "{{productId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Registro alterado com sucesso\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Logitech MX Vertical 1\",\n  \"preco\": 470,\n  \"descricao\": \"Mouse\",\n  \"quantidade\": 381\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/produtos/{{productId}}",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "produtos",
+                "{{productId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"cartId\", jsonData._id);\r",
+                  "\r",
+                  "pm.test(\"Response has required fields\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"message\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"_id\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+                  "});\r"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"produtos\": [\n    {\n      \"idProduto\": \"{{productId}}\",\n      \"quantidade\": 10\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/carrinhos",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "carrinhos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Carts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Response has required fields\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"quantidade\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"carrinhos\");\r",
+                  "    pm.expect(jsonData.carrinhos).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Quantidade confere com total de carrinhos\", function () {\r",
+                  "    pm.expect(jsonData.quantidade).to.eql(jsonData.carrinhos.length);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Carrinhos possuem os campos principais\", function () {\r",
+                  "    jsonData.carrinhos.forEach(carrinho => {\r",
+                  "        pm.expect(carrinho).to.have.property(\"produtos\");\r",
+                  "        pm.expect(carrinho).to.have.property(\"precoTotal\");\r",
+                  "        pm.expect(carrinho).to.have.property(\"quantidadeTotal\");\r",
+                  "        pm.expect(carrinho).to.have.property(\"idUsuario\");\r",
+                  "        pm.expect(carrinho).to.have.property(\"_id\");\r",
+                  "    });\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://serverest.dev/carrinhos?precoTotal=1300&quantidadeTotal=2",
+              "protocol": "https",
+              "host": [
+                "serverest",
+                "dev"
+              ],
+              "path": [
+                "carrinhos"
+              ],
+              "query": [
+                {
+                  "key": "precoTotal",
+                  "value": "1300"
+                },
+                {
+                  "key": "quantidadeTotal",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cart by Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Response has required fields\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"produtos\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"precoTotal\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"quantidadeTotal\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"idUsuario\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"_id\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Tipos principais estão corretos\", function () {\r",
+                  "    pm.expect(jsonData.produtos).to.be.an(\"array\");\r",
+                  "    pm.expect(jsonData.precoTotal).to.be.a(\"number\");\r",
+                  "    pm.expect(jsonData.quantidadeTotal).to.be.a(\"number\");\r",
+                  "    pm.expect(jsonData.idUsuario).to.be.a(\"string\");\r",
+                  "    pm.expect(jsonData._id).to.be.a(\"string\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/carrinhos/{{cartId}}",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "carrinhos",
+                "{{cartId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Canceled Cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Registro excluído com sucesso. Estoque dos produtos reabastecido\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/carrinhos/cancelar-compra",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "carrinhos",
+                "cancelar-compra"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Registro excluído com sucesso\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/produtos/{{productId}}",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "produtos",
+                "{{productId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Registro excluído com sucesso\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios/{{userId}}",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 - Negative Tests - Users",
+      "item": [
+        {
+          "name": "Create user with Invalid administrator field",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.administrador).to.eql(\"administrador deve ser 'true' ou 'false'\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Fulano da Silva\",\n  \"email\": \"qakls@qa.com.br\",\n  \"password\": \"teste\",\n  \"administrador\": \"verdadeiro\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create user without name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.nome).to.eql(\"nome não pode ficar em branco\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"\",\n  \"email\": \"qakls@qa.com.br\",\n  \"password\": \"teste\",\n  \"administrador\": \"true\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create user without email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.email).to.eql(\"email não pode ficar em branco\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"teste\",\n  \"email\": \"\",\n  \"password\": \"teste\",\n  \"administrador\": \"true\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create user with Invalid email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.email).to.eql(\"email deve ser um email válido\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"teste\",\n  \"email\": \"teste\",\n  \"password\": \"teste\",\n  \"administrador\": \"true\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get user by Invalid Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.id).to.eql(\"id deve ter exatamente 16 caracteres alfanuméricos\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios/teste",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios",
+                "teste"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update same Email User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro está presente\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"message\");\r",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Fulano da Silva\",\n  \"email\": \"beltrano.test@qa.com.br\",\n  \"password\": \"teste\",\n  \"administrador\": \"true\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/usuarios/teste",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "usuarios",
+                "teste"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 - Negative Tests - Login",
+      "item": [
+        {
+          "name": "LOGIN with invalid Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.email).to.eql(\"email deve ser um email válido\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"qaklsqa.com.br\",\r\n  \"password\": \"teste\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/login",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://serverest.dev/login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"email\": \"fulano@qa.com\",\r\n  \"password\": \"teste\"\r\n}'"
+          },
+          "response": []
+        },
+        {
+          "name": "LOGIN with invalid Password format",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.password).to.eql(\"password deve ser uma string\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"qakls@qa.com.br\",\r\n  \"password\": 123\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/login",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://serverest.dev/login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"email\": \"fulano@qa.com\",\r\n  \"password\": \"teste\"\r\n}'"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 - Negative Tests - Products",
+      "item": [
+        {
+          "name": "LOGIN",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const responseData = pm.response.json();\r",
+                  "pm.environment.set(\"token\", responseData.authorization);\r",
+                  "\r",
+                  "pm.test(\"Token foi gerado\", function () {\r",
+                  "    pm.expect(responseData.authorization).to.be.a(\"string\");\r",
+                  "    pm.expect(responseData.authorization).to.not.be.empty;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(responseData.message).to.eql(\"Login realizado com sucesso\");\r",
+                  "});\r"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/login",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://serverest.dev/login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"email\": \"fulano@qa.com\",\r\n  \"password\": \"teste\"\r\n}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product with negative price",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"preco deve ser um número positivo\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Tech Pix\",\n  \"preco\": 0,\n  \"descricao\": \"Camera\",\n  \"quantidade\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/produtos",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "produtos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product with negative quantity",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"quantidade deve ser maior ou igual a 0\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Tech Pix1\",\n  \"preco\": 10,\n  \"descricao\": \"Camera\",\n  \"quantidade\": -1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/produtos",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "produtos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product with the same name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Já existe produto com esse nome\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Tech Pix\",\n  \"preco\": 100,\n  \"descricao\": \"Camera\",\n  \"quantidade\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/produtos",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "produtos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product without token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Logitech MX Vertical\",\n  \"preco\": 470,\n  \"descricao\": \"Mouse\",\n  \"quantidade\": 381\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/produtos",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "produtos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product by Invalid Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Produto não encontrado\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/produtos/1",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "produtos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product with Invalid Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.id).to.eql(\"id deve ter exatamente 16 caracteres alfanuméricos\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Logitech MX Vertical 1\",\n  \"preco\": 470,\n  \"descricao\": \"Mouse\",\n  \"quantidade\": 381\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/produtos/1",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "produtos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 - Negative Tests - Carts",
+      "item": [
+        {
+          "name": "LOGIN",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const responseData = pm.response.json();\r",
+                  "pm.environment.set(\"token\", responseData.authorization);\r",
+                  "\r",
+                  "pm.test(\"Token foi gerado\", function () {\r",
+                  "    pm.expect(responseData.authorization).to.be.a(\"string\");\r",
+                  "    pm.expect(responseData.authorization).to.not.be.empty;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(responseData.message).to.eql(\"Login realizado com sucesso\");\r",
+                  "});\r"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/login",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://serverest.dev/login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"email\": \"fulano@qa.com\",\r\n  \"password\": \"teste\"\r\n}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Cart More than 1 cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Não é permitido ter mais de 1 carrinho\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"produtos\": [\n    {\n      \"idProduto\": \"Mrpd4vROXRzXgnsk\",\n      \"quantidade\": 10\n    },\n    {\n      \"idProduto\": \"txEfAv2jeeLPwvFY\",\n      \"quantidade\": 5\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/carrinhos",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "carrinhos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Cart without token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"produtos\": [\n    {\n      \"idProduto\": \"Mrpd4vROXRzXgnsk\",\n      \"quantidade\": 10\n    },\n    {\n      \"idProduto\": \"txEfAv2jeeLPwvFY\",\n      \"quantidade\": 5\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_carrefour}}/carrinhos",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "carrinhos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cart by Invalid Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.message || jsonData.id).to.eql(\"id deve ter exatamente 16 caracteres alfanuméricos\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/carrinhos/{{cartId}}",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "carrinhos",
+                "{{cartId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de sucesso está correta\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Registro excluído com sucesso\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/carrinhos/concluir-compra",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "carrinhos",
+                "concluir-compra"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Canceled Cart without token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de erro\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/carrinhos/cancelar-compra",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "carrinhos",
+                "cancelar-compra"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Canceled Invalid Cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Mensagem de retorno está correta\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Não foi encontrado carrinho para esse usuário\");\r",
+                  "});\r"
+                ],
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url_carrefour}}/carrinhos/cancelar-compra",
+              "host": [
+                "{{url_carrefour}}"
+              ],
+              "path": [
+                "carrinhos",
+                "cancelar-compra"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "url_carrefour",
+      "value": "https://serverest.dev"
+    },
+    {
+      "key": "email",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "nomeUser",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "nomeProduct",
+      "value": ""
+    },
+    {
+      "key": "productId",
+      "value": ""
+    },
+    {
+      "key": "cartId",
+      "value": ""
+    }
+  ]
+}

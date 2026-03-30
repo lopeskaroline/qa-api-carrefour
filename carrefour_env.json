@@ -1,0 +1,70 @@
+{
+	"id": "efc09a2b-b76c-4062-b800-7f2d1daf5eac",
+	"name": "carrefour_env",
+	"values": [
+		{
+			"key": "userId",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "productId",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "cartId",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "email",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "nome",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "nomeUser",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "nomeProduct",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "password",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "nameProduct",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"color": null,
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2026-03-30T19:28:55.664Z",
+	"_postman_exported_using": "Postman/12.4.1"
+}
